@@ -21,15 +21,17 @@ export default function PasswordChangedForm() {
   const [isActivated, setIsActivated] = useState<boolean>(
     user?.isActivated || false
   )
-  const [passwordState, passwordAction, isPasswordPending] = useActionState<
-    ActionState,
-    FormData
-  >(updatePassword, { error: "", success: "" })
+  const [isPasswordPending, setIsPasswordPending] = useState<boolean>(false)
+  const [isDeletePending, setIsDeletePending] = useState<boolean>(false)
+  // const [passwordState, passwordAction, isPasswordPending] = useActionState<
+  //   ActionState,
+  //   FormData
+  // >(updatePassword, { error: "", success: "" })
 
-  const [deleteState, deleteAction, isDeletePending] = useActionState<
-    ActionState,
-    FormData
-  >(deleteAccount, { error: "", success: "" })
+  // const [deleteState, deleteAction, isDeletePending] = useActionState<
+  //   ActionState,
+  //   FormData
+  // >(deleteAccount, { error: "", success: "" })
 
   const handlePasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -42,7 +44,8 @@ export default function PasswordChangedForm() {
     // explore alternative options.
 
     startTransition(() => {
-      passwordAction(new FormData(event.currentTarget))
+      setIsPasswordPending(!isPasswordPending)
+      // passwordAction(new FormData(event.currentTarget))
     })
   }
 
@@ -51,7 +54,8 @@ export default function PasswordChangedForm() {
   ) => {
     event.preventDefault()
     startTransition(() => {
-      deleteAction(new FormData(event.currentTarget))
+      setIsDeletePending(!isDeletePending)
+      // deleteAction(new FormData(event.currentTarget))
     })
   }
 
@@ -102,12 +106,19 @@ export default function PasswordChangedForm() {
                 maxLength={100}
               />
             </div>
+            {/*
             {passwordState.error && (
               <p className="text-red-500 text-sm">{passwordState.error}</p>
             )}
             {passwordState.success && (
               <p className="text-green-500 text-sm">{passwordState.success}</p>
             )}
+             */}
+
+            {isPasswordPending && (
+              <p className="text-red-500 text-sm">{`New password must be different from the current password.`}</p>
+            )}
+
             <Button
               type="submit"
               className="bg-orange-500 hover:bg-orange-600 text-white"
@@ -149,9 +160,14 @@ export default function PasswordChangedForm() {
                 maxLength={100}
               />
             </div>
-            {deleteState.error && (
+            {/* {deleteState.error && (
               <p className="text-red-500 text-sm">{deleteState.error}</p>
+            )} */}
+
+            {isDeletePending && (
+              <p className="text-red-500 text-sm">{`Account deletion successfully.`}</p>
             )}
+
             <Button
               type="submit"
               variant="destructive"

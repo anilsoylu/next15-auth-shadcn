@@ -16,10 +16,11 @@ export default function ProfileForm() {
   const [isActivated, setIsActivated] = useState<boolean>(
     user?.isActivated || false
   )
-  const [state, formAction, isPending] = useActionState<ActionState, FormData>(
-    updateAccount,
-    { error: "", success: "" }
-  )
+  const [isPending, setIsPending] = useState<boolean>(false)
+  // const [state, formAction, isPending] = useActionState<ActionState, FormData>(
+  //   updateAccount,
+  //   { error: "", success: "" }
+  // )
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -31,12 +32,14 @@ export default function ProfileForm() {
     // Another option here is to persist the values to local storage. I might
     // explore alternative options.
 
-    const formData = new FormData(event.currentTarget)
-    formData.set("isActivated", isActivated.toString())
+    setIsPending(!isPending)
 
-    startTransition(() => {
-      formAction(formData)
-    })
+    // const formData = new FormData(event.currentTarget)
+    // formData.set("isActivated", isActivated.toString())
+
+    // startTransition(() => {
+    //   formAction(formData)
+    // })
   }
 
   return (
@@ -81,12 +84,20 @@ export default function ProfileForm() {
                 onCheckedChange={() => setIsActivated(!isActivated)}
               />
             </div>
+
+            {/* 
             {state.error && (
               <p className="text-red-500 text-sm">{state.error}</p>
             )}
             {state.success && (
               <p className="text-green-500 text-sm">{state.success}</p>
             )}
+             */}
+
+            {isPending && (
+              <p className="text-green-500 text-sm">{`Account updated successfully.`}</p>
+            )}
+
             <Button type="submit" size="sm" disabled={isPending}>
               {isPending ? (
                 <>
